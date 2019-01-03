@@ -9,14 +9,6 @@
     public interface IEthereumService
     {
         /// <summary>
-        /// Gets or sets the account address.
-        /// </summary>
-        /// <value>
-        /// The account address.
-        /// </value>
-        string AccountAddress { get; set; }
-
-        /// <summary>
         /// Saves the contract to table storage.
         /// </summary>
         /// <param name="contract">The contract.</param>

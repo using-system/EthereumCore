@@ -30,11 +30,11 @@
         /// </summary>
         /// <param name="cancellationToken">Indicates that the start process has been aborted.</param>
         /// <returns></returns>
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             this.logger.LogInformation("App started");
 
-            return Task.CompletedTask;
+            await this.ExecuteUserCommand();
         }
 
         /// <summary>
@@ -49,9 +49,24 @@
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
+        private Task ExecuteUserCommand()
+        {
+            while (true)
+            {
+                Console.WriteLine("Command ?");
+                string command = Console.ReadLine();
+                switch (command)
+                {
+                    default:
+                        continue;
+                }
+            }
+           
+        }
+
+            /// <summary>
+            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            /// </summary>
         public void Dispose()
         {
 

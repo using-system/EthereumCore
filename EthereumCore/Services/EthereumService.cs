@@ -24,13 +24,7 @@
 
         private string storageAccount;
 
-        /// <summary>
-        /// Gets or sets the account address.
-        /// </summary>
-        /// <value>
-        /// The account address.
-        /// </value>
-        public string AccountAddress { get; set; }
+        private string accountAddress;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BasicEthereumService"/> class.
@@ -39,7 +33,7 @@
         public BasicEthereumService(IOptions<EthereumSettings> config)
         {
             this.web3 = new Web3("http://localhost:8545");
-            this.AccountAddress = config.Value.EhtereumAccount;
+            this.accountAddress = config.Value.EhtereumAccount;
             this.password = config.Value.EhtereumPassword;
             this.storageAccount = config.Value.StorageAccount;
             this.storageKey = config.Value.StorageKey;
@@ -115,10 +109,10 @@
             if (existing != null) throw new Exception($"Contract {name} is present in storage");
             try
             {
-                var resultUnlocking = await web3.Personal.UnlockAccount.SendRequestAsync(this.AccountAddress, password, 60);
+                var resultUnlocking = await web3.Personal.UnlockAccount.SendRequestAsync(this.accountAddress, password, 60);
                 if (resultUnlocking)
                 {
-                    var transactionHash = await web3.Eth.DeployContract.SendRequestAsync(abi, byteCode, this.AccountAddress, new Nethereum.Hex.HexTypes.HexBigInteger(gas), 2);
+                    var transactionHash = await web3.Eth.DeployContract.SendRequestAsync(abi, byteCode, this.accountAddress, new Nethereum.Hex.HexTypes.HexBigInteger(gas), 2);
 
                     EthereumContract eci = new EthereumContract()
                     {
@@ -153,7 +147,7 @@
                 return existing.ContractAddress;
             else
             {
-                var resultUnlocking = await web3.Personal.UnlockAccount.SendRequestAsync(this.AccountAddress, password, 60);
+                var resultUnlocking = await web3.Personal.UnlockAccount.SendRequestAsync(this.accountAddress, password, 60);
                 if (resultUnlocking)
                 {
                     var receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(existing.TransactionHash);
@@ -184,7 +178,7 @@
             if (existing == null) throw new Exception($"Contract {name} does not exist in storage");
             if (existing.ContractAddress == null) throw new Exception($"Contract address for {name} is empty. Please call TryGetContractAddress until it returns the address");
 
-            var resultUnlocking = await web3.Personal.UnlockAccount.SendRequestAsync(this.AccountAddress, password, 60);
+            var resultUnlocking = await web3.Personal.UnlockAccount.SendRequestAsync(this.accountAddress, password, 60);
             if (resultUnlocking)
             {
                 return web3.Eth.GetContract(existing.Abi, existing.ContractAddress);
