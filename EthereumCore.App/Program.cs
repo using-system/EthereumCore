@@ -7,6 +7,8 @@
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
+    using EthereumCore.Extensions;
+
     /// <summary>
     /// Program entry point
     /// </summary>
@@ -30,6 +32,9 @@
                   {
                       services.AddOptions();
                       services.AddSingleton<IHostedService, AppService>();
+
+                      services.Configure<Models.EthereumSettings>(hostContext.Configuration);
+                      services.AddEthereumService();
 
                   })
                   .ConfigureLogging((hostingContext, logging) => {

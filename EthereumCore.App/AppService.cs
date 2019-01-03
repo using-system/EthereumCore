@@ -3,7 +3,7 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using EthereumCore.Services.Contracts;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
@@ -16,12 +16,16 @@
     {
         private ILogger logger;
 
+        private IEthereumService ethereumService;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppService"/> class.
+        /// Initializes a new instance of the <see cref="AppService" /> class.
         /// </summary>
+        /// <param name="ethereumService">The ethereum service.</param>
         /// <param name="logger">The logger.</param>
-        public AppService(ILogger<AppService> logger)
+        public AppService(IEthereumService ethereumService, ILogger<AppService> logger)
         {
+            this.ethereumService = ethereumService;
             this.logger = logger;
         }
 

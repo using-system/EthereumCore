@@ -14,7 +14,7 @@
 
     using EthereumCore.Models;
 
-    public class BasicEthereumService : Contracts.IEthereumService
+    public class EthereumService : Contracts.IEthereumService
     {
         private Web3 web3;
 
@@ -27,10 +27,10 @@
         private string accountAddress;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicEthereumService"/> class.
+        /// Initializes a new instance of the <see cref="EthereumService"/> class.
         /// </summary>
         /// <param name="config">The configuration.</param>
-        public BasicEthereumService(IOptions<EthereumSettings> config)
+        public EthereumService(IOptions<EthereumSettings> config)
         {
             this.web3 = new Web3("http://localhost:8545");
             this.accountAddress = config.Value.EhtereumAccount;
