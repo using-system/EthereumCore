@@ -33,7 +33,13 @@
                       services.AddOptions();
                       services.AddSingleton<IHostedService, AppService>();
 
-                      services.Configure<Models.EthereumSettings>(hostContext.Configuration);
+                      services.Configure<Models.EthereumSettings>(config =>
+                      {
+                          config.EhtereumAccount = hostContext.Configuration["EthereumSettings:EhtereumAccount"];
+                          config.EhtereumPassword = hostContext.Configuration["EthereumSettings:EhtereumPassword"];
+                          config.StorageAccount = hostContext.Configuration["EthereumSettings:StorageAccount"];
+                          config.StorageKey = hostContext.Configuration["EthereumSettings:StorageKey"];
+                      });
                       services.AddEthereumService();
 
                   })

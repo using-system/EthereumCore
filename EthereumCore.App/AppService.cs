@@ -53,19 +53,32 @@
             return Task.CompletedTask;
         }
 
-        private Task ExecuteUserCommand()
+        private async Task ExecuteUserCommand()
         {
             while (true)
             {
-                Console.WriteLine("Command ?");
-                string command = Console.ReadLine();
-                switch (command)
+                try
                 {
-                    default:
-                        continue;
+                    Console.WriteLine("Command ?");
+
+                    string command = Console.ReadLine();
+                    switch (command)
+                    {
+                        case "getcontractaddress":
+                            Console.WriteLine("Contract name");
+                            string contractAddress = await this.ethereumService.TryGetContractAddressAsync(Console.ReadLine());
+                            Console.WriteLine($"Contract address {contractAddress}");
+                            break;
+                        default:
+                            continue;
+                    }
                 }
-            }
-           
+                catch(Exception exc)
+                {
+                    this.logger.LogError(exc, "An error onccured");
+                }
+
+            }           
         }
 
             /// <summary>
