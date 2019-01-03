@@ -7,6 +7,7 @@
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Auth;
     using Microsoft.WindowsAzure.Storage.Table;
+    using Microsoft.Extensions.Logging;
 
     using Nethereum.Contracts;
     using Nethereum.Web3;
@@ -26,17 +27,21 @@
 
         private string accountAddress;
 
+        private ILogger logger;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="EthereumService"/> class.
+        /// Initializes a new instance of the <see cref="EthereumService" /> class.
         /// </summary>
         /// <param name="config">The configuration.</param>
-        public EthereumService(IOptions<EthereumSettings> config)
+        /// <param name="logger">The logger.</param>
+        public EthereumService(IOptions<EthereumSettings> config, ILogger<EthereumService> logger)
         {
             this.web3 = new Web3("http://localhost:8545");
             this.accountAddress = config.Value.EhtereumAccount;
             this.password = config.Value.EhtereumPassword;
             this.storageAccount = config.Value.StorageAccount;
             this.storageKey = config.Value.StorageKey;
+            this.logger = logger;
         }
 
 
@@ -126,6 +131,7 @@
             }
             catch (Exception exc)
             {
+                this.logger.LogError(exc, "An error occured on Ethereum service");
                 return false;
             }
             return false;
