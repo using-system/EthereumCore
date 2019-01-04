@@ -3,9 +3,11 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using EthereumCore.Models;
     using EthereumCore.Services.Contracts;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
 
     /// <summary>
     /// App Service
@@ -14,18 +16,24 @@
     /// <seealso cref="System.IDisposable" />
     public class AppService : IHostedService, IDisposable
     {
-        private ILogger logger;
-
         private IEthereumService ethereumService;
+
+        private string accountAddress;
+
+        private ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppService" /> class.
         /// </summary>
         /// <param name="ethereumService">The ethereum service.</param>
+        /// <param name="config">The configuration.</param>
         /// <param name="logger">The logger.</param>
-        public AppService(IEthereumService ethereumService, ILogger<AppService> logger)
+        public AppService(IEthereumService ethereumService,
+            IOptions<EthereumSettings> config,
+            ILogger<AppService> logger)
         {
             this.ethereumService = ethereumService;
+            this.accountAddress = config.Value.EhtereumAccount;
             this.logger = logger;
         }
 
@@ -64,10 +72,37 @@
                     string command = Console.ReadLine();
                     switch (command)
                     {
-                        case "getcontractaddress":
-                            Console.WriteLine("Contract name");
+                        case "get":
+                            Console.WriteLine("Contract name ?");
                             string contractAddress = await this.ethereumService.TryGetContractAddressAsync(Console.ReadLine());
                             Console.WriteLine($"Contract address {contractAddress}");
+                            break;
+                        case "release":
+                            Console.WriteLine("Contract name ?");
+                            string contractNameToRelease = Console.ReadLine();
+                            Console.WriteLine("Abi ?");
+                            string abiToRelease = Console.ReadLine();
+                            Console.WriteLine("Bytecode ?");
+                            string byteCodeToRelease = Console.ReadLine();
+                            Console.WriteLine("Gas ?");
+                            int.TryParse(Console.ReadLine(), out int gasToRelease);
+                            bool isReleaseSucess = await this.ethereumService.ReleaseContractAsync(contractNameToRelease, abiToRelease,
+                                byteCodeToRelease, gasToRelease);
+                            Console.WriteLine($"Release contract result : {isReleaseSucess}");
+                            break;
+                        case "execute":
+                            Console.WriteLine("Contract name ?");
+                            string contractNameToExecute = Console.ReadLine();
+                            Console.WriteLine("Contract method ?");
+                            string contractMethodToExecute = Console.ReadLine();
+                            Console.WriteLine("Value ?");
+                            string contractMethodValue = Console.ReadLine();
+
+                            string contractAddressToExecute = await this.ethereumService.TryGetContractAddressAsync(contractNameToExecute);
+                            var contractToExecute = await this.ethereumService.GetContractAsync(contractNameToExecute);
+                            var methodToExecute = contractToExecute.GetFunction(contractMethodToExecute);
+                            var result = await methodToExecute.SendTransactionAsync(this.accountAddress, contractMethodValue);
+                            Console.WriteLine($"Method result : {result}");
                             break;
                         default:
                             continue;
